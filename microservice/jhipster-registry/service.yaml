@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jhipster-registry
+  namespace: iot
+  labels:
+    app: jhipster-registry
+spec:
+  ports:
+    - port: 8761
+      name: http
+  clusterIP: None
+  publishNotReadyAddresses: true
+  selector:
+    app: jhipster-registry
