@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql-dev
+  namespace: monitoring
+spec:
+  selector:
+    app: mysqldevexporter
+  ports:
+  - name: mysqldevexporter
+    protocol: TCP
+    port: 9104
+    targetPort: 9104

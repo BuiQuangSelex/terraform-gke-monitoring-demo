@@ -1,4 +1,5 @@
 resource "kubernetes_deployment" "gateway" {
+  count = 0
   metadata {
     name      = "gateway"
     namespace = "iot"
