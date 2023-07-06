@@ -1,4 +1,5 @@
 resource "kubernetes_stateful_set" "jhipster_registry" {
+  count = 0
   metadata {
     name      = "jhipster-registry"
     namespace = "iot"
