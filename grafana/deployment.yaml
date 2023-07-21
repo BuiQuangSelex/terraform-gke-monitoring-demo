@@ -35,7 +35,11 @@ spec:
             readOnly: false
       volumes:
         - name: grafana-storage
-          emptyDir: {}
+          hostPath:
+              # directory location on host
+              path: /var/lib/grafana
+              # this field is optional
+              type: Directory
         - name: grafana-datasources
           configMap:
               defaultMode: 420

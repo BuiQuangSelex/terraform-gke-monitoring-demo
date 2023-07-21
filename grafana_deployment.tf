@@ -1,11 +1,8 @@
 resource "kubernetes_deployment" "grafana" {
-  count = 1
   metadata {
     name      = "grafana"
     namespace = "monitoring"
   }
-
-  depends_on = [ kubernetes_namespace.monitoring ]
 
   spec {
     replicas = 1
@@ -27,8 +24,12 @@ resource "kubernetes_deployment" "grafana" {
 
       spec {
         volume {
-          name      = "grafana-storage"
-          empty_dir {}
+          name = "grafana-storage"
+
+          host_path {
+            path = "/grafana"
+            type = "Directory"
+          }
         }
 
         volume {

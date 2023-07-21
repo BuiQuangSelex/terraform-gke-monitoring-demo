@@ -85,3 +85,5 @@ terraform apply
 ```
 kubectl --kubeconfig output/kubeconfig  port-forward service/grafana 3000 -n monitoring
 ```
+## Convert yaml -> tf
+- k2tf
