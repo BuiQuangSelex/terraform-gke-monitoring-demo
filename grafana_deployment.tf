@@ -24,11 +24,10 @@ resource "kubernetes_deployment" "grafana" {
 
       spec {
         volume {
-          name = "grafana-storage"
+          name = "grafana-volume"
 
-          host_path {
-            path = "/grafana"
-            type = "Directory"
+          persistent_volume_claim {
+            claim_name = "pvc-grafana"
           }
         }
 
@@ -65,7 +64,7 @@ resource "kubernetes_deployment" "grafana" {
           }
 
           volume_mount {
-            name       = "grafana-storage"
+            name       = "grafana-volume"
             mount_path = "/var/lib/grafana"
           }
 
@@ -73,6 +72,10 @@ resource "kubernetes_deployment" "grafana" {
             name       = "grafana-datasources"
             mount_path = "/etc/grafana/provisioning/datasources"
           }
+        }
+
+        security_context {
+          fs_group = 2000
         }
       }
     }
