@@ -1,89 +1,86 @@
-# Introduction
+# k2tf - Kubernetes YAML to Terraform HCL converter
 
-This repository is aims to build an infrastructure of Selex's platform - an IoT platform for smart electric vehicle. 
-This instruction is mostly based on Ubuntu, so that some commands   may not work on the other Unix-like OS.
+[![Build Status](https://cloud.drone.io/api/badges/sl1pm4t/k2tf/status.svg)](https://cloud.drone.io/sl1pm4t/k2tf)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sl1pm4t/k2tf?)](https://goreportcard.com/report/github.com/sl1pm4t/k2tf)
+[![Release](https://img.shields.io/github/release-pre/sl1pm4t/k2tf.svg)](https://github.com/sl1pm4t/k2tf/releases)
 
-# Prerequisites
-## Terraform
-Reference: https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli
+A tool for converting Kubernetes API Objects (in YAML format) into HashiCorp's Terraform configuration language.
 
-```sh
-sudo apt-get update && sudo apt-get install -y gnupg software-properties-common
-wget -O- https://apt.releases.hashicorp.com/gpg | \
-gpg --dearmor | \
-sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
-https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
-sudo tee /etc/apt/sources.list.d/hashicorp.list
-sudo apt update
-sudo apt-get install terraform
-terraform version
+The converted `.tf` files are suitable for use with the [Terraform Kubernetes Provider](https://www.terraform.io/docs/providers/kubernetes/index.html)
+
+[![asciicast](https://asciinema.org/a/5LzAc7Eha7w7dwrktAxcMdpIc.svg)](https://asciinema.org/a/5LzAc7Eha7w7dwrktAxcMdpIc)
+
+## Installation
+
+**Pre-built Binaries**
+
+Download Binary from GitHub [releases](https://github.com/sl1pm4t/k2tf/releases/latest) page.
+
+**Build from source**
+
+_See below_
+
+**Homebrew**
+
 ```
-## gcloud cli
-Reference: https://cloud.google.com/sdk/docs/install
-```sh
-sudo apt-get install apt-transport-https ca-certificates gnupg
-echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-sudo apt-get update && sudo apt-get install google-cloud-cli
-gcloud version
+$ brew install k2tf
 ```
+**asdf**
 
-## kubectl cli
-Reference: https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/
-```sh
-curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
-kubectl version
+Use the [asdf-k2tf](https://github.com/carlduevel/asdf-k2tf) plugin.
+
+
+## Example Usage
+
+**Convert a single YAML file and write generated Terraform config to Stdout**
+
 ```
-
-# Configuration
-## Config 
-You should config gcloud by logging in first authorize for it using commands below.
-```sh
-gcloud init
-gcloud auth application-default login
-
-# generate SSH key pair
-bash scripts/generate_ssh_key.sh
-
-# init terraform
-terraform init
-
-# see the plan
-terraform plan
-
-# apply the changes
-terraform apply
+$ k2tf -f test-fixtures/service.yaml
 ```
 
+**Convert a single YAML file and write output to file**
 
-
-## Infrastructure
--  VPC
--  Domain
--  Database MySQL
--  Kubernetes cluster 
--  Container Registry 
--  Load Balancer
--  Compute Engine 
--  Firewall
-## Devtools
-- Jenkins
-- SonarQube
-## Logging
-- Elastic Search
-- Logstash
-- Kibana
-## Monitor
-- Grafana
-- Prometheus
-
-
-
-## using kubectl connect cluster
 ```
-kubectl --kubeconfig output/kubeconfig  port-forward service/grafana 3000 -n monitoring
+$ k2tf -f test-fixtures/service.yaml -o service.tf
 ```
-## Convert yaml -> tf
-- k2tf
+
+**Convert a directory of Kubernetes YAML files**
+
+```
+$ k2tf -f test-fixtures/
+```
+
+**Read & convert Kubernetes objects directly from a cluster**
+
+```
+$ kubectl get deployments -o yaml | ./k2tf -o deployments.tf
+```
+
+## Building
+
+> **NOTE** Requires a working Golang build environment.
+
+This project uses Golang modules for dependency management, so it can be cloned outside of the `$GOPATH`.
+
+**Clone the repository**
+
+```
+$ git clone https://github.com/sl1pm4t/k2tf.git
+```
+
+**Build**
+
+```
+$ cd k2tf
+$ make build
+```
+
+**Run Tests**
+
+```
+$ make test
+```
+
+---
+
+[![Downloads](https://img.shields.io/github/downloads/sl1pm4t/k2tf/total.svg)](https://img.shields.io/github/downloads/sl1pm4t/k2tf/total.svg)
