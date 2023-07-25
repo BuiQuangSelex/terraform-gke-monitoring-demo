@@ -1,10 +1,10 @@
 resource "google_compute_subnetwork" "private" {
-  name          = "private"
-  ip_cidr_range = "10.2.0.0/16"
-  region        = "asia-southeast1"
-  network       = google_compute_network.vpc_network.id
+  name                     = "private"
+  ip_cidr_range            = "10.2.0.0/16"
+  region                   = "asia-southeast1"
+  network                  = google_compute_network.vpc_network.id
   private_ip_google_access = true
-  depends_on = [google_compute_network.vpc_network]
+  depends_on               = [google_compute_network.vpc_network]
   secondary_ip_range {
     range_name    = "k8s-pod-range"
     ip_cidr_range = "10.48.0.0/14"
