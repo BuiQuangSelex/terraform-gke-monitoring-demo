@@ -1,11 +1,8 @@
 resource "kubernetes_deployment" "grafana" {
-  count = 1
   metadata {
     name      = "grafana"
     namespace = "monitoring"
   }
-
-  depends_on = [ kubernetes_namespace.monitoring ]
 
   spec {
     replicas = 1
@@ -27,8 +24,11 @@ resource "kubernetes_deployment" "grafana" {
 
       spec {
         volume {
-          name      = "grafana-storage"
-          empty_dir {}
+          name = "grafana-volume"
+
+          persistent_volume_claim {
+            claim_name = "pvc-grafana"
+          }
         }
 
         volume {
@@ -64,7 +64,7 @@ resource "kubernetes_deployment" "grafana" {
           }
 
           volume_mount {
-            name       = "grafana-storage"
+            name       = "grafana-volume"
             mount_path = "/var/lib/grafana"
           }
 
@@ -72,6 +72,10 @@ resource "kubernetes_deployment" "grafana" {
             name       = "grafana-datasources"
             mount_path = "/etc/grafana/provisioning/datasources"
           }
+        }
+
+        security_context {
+          fs_group = 2000
         }
       }
     }

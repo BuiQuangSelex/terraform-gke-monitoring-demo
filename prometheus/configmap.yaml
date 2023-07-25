@@ -44,6 +44,14 @@ data:
       - job_name: 'mysql-server-dev'
         static_configs:
           - targets: ['mysql-dev.monitoring.svc.cluster.local:9104']
+      - job_name: 'influxdb'
+        scrape_interval: 2s
+        static_configs:
+          - targets: ['34.87.143.70:9100']
+      - job_name: 'mqtt-vernemq'
+        scrape_interval: 2s
+        static_configs:
+          - targets: ['35.247.180.175:9100']
       - job_name: 'gateway'
         scrape_interval: 2s
         metrics_path: '/management/prometheus'

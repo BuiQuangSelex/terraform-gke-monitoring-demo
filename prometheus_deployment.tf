@@ -1,5 +1,4 @@
 resource "kubernetes_deployment" "prometheus_deployment" {
-  count = 1
   metadata {
     name      = "prometheus-deployment"
     namespace = "monitoring"
@@ -36,8 +35,11 @@ resource "kubernetes_deployment" "prometheus_deployment" {
         }
 
         volume {
-          name      = "prometheus-storage-volume"
-          empty_dir {}
+          name = "prometheus-storage-volume"
+
+          persistent_volume_claim {
+            claim_name = "pvc-prometheus"
+          }
         }
 
         container {
@@ -73,9 +75,12 @@ resource "kubernetes_deployment" "prometheus_deployment" {
             mount_path = "/prometheus/"
           }
         }
+
+        security_context {
+          fs_group = 2000
+        }
       }
     }
   }
-  depends_on = [ kubernetes_namespace.monitoring ]
 }
 

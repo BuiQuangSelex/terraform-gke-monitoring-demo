@@ -26,3 +26,17 @@ resource "google_compute_firewall" "allow_ssh" {
 
   source_ranges = ["0.0.0.0/0"]
 }
+
+# https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_firewall
+resource "google_compute_firewall" "allow_node_exporter" {
+  name        = "quangbs-allow-node-exporter"
+  network     = google_compute_network.vpc_network.name
+  description = "Creates firewall rule targeting tagged instances"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["9100"]
+  }
+  source_ranges = ["0.0.0.0/0"]
+  target_tags   = ["quangbs-allow-node-exporter"]
+}
